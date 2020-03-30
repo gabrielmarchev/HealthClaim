@@ -1,0 +1,24 @@
+{
+  "name": "HealthClaim",
+  "version": "1.0.0",
+  "description": "Analysis of health claim benefits on food packaging",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielmarchev/HealthClaim.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabrielmarchev/HealthClaim/issues"
+  },
+  "homepage": "https://github.com/gabrielmarchev/HealthClaim#readme",
+  "devDependencies": {
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11"
+  }
+}
