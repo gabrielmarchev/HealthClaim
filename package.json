@@ -4,7 +4,8 @@
   "description": "Analysis of health claim benefits on food packaging",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development --watch ./claimsmanager/frontend/src/index.js --output ./claimsmanager/frontend/static/frontend/main.js",
+    "build": "webpack --mode production ./claimsmanager/frontend/src/index.js --output ./claimsmanager/frontend/static/frontend/main.js"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,21 @@
   },
   "homepage": "https://github.com/gabrielmarchev/HealthClaim#readme",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "css-loader": "^3.4.2",
+    "file-loader": "^6.0.0",
+    "proptypes": "^1.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "style-loader": "^1.1.3",
+    "url-loader": "^4.0.0"
   }
 }
