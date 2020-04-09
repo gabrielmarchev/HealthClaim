@@ -17,6 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('frontend.urls')),
-    path('', include('claims.urls'))
+    path('', include('frontend.urls')), #frontend app
+    path('', include('claims.urls')) #for the root, include claims urls
 ]
