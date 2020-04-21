@@ -13,6 +13,8 @@ export class Claims extends Component {
   componentDidMount() {
     this.props.getClaims();
   }
+  
+  //<SearchBar onSearch={this.search} />
 
   render() {
     return (
@@ -46,7 +48,7 @@ export class Claims extends Component {
 }
 
 const mapStateToProps = state => ({
-  claims: state.claimReducer.claims,
+  claims: state.ClaimReducer.claims,
 });
 
 export default connect(mapStateToProps, { getClaims, deleteClaim })(Claims);

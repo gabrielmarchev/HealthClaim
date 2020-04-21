@@ -1,6 +1,10 @@
 import { combineReducers } from 'redux';
-import claimReducer from './claimReducer';
+import ClaimReducer from './ClaimReducer';
+import ErrorsReducer from "./ErrorsReducer";
+import TweetsReducer from "./TweetsReducer";
 
 export default combineReducers({
-  claimReducer
+  ClaimReducer,
+  ErrorsReducer,
+  TweetsReducer
 });
