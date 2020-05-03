@@ -9,3 +9,4 @@ router.register('api/claims', ClaimViewSet, 'claims') #gives url's registered fo
 
 urlpatterns = router.urls
 urlpatterns.append(path('twitter_search', views.twitter_search))
+urlpatterns.append(path('gettweets', views.gettweets))

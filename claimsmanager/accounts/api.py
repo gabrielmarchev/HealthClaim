@@ -38,4 +38,4 @@ class UserAPI(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
-        return self.request.user #look at token that is sen talong, sends back associated user
+        return self.request.user #look at token that is sent along, sends back associated user

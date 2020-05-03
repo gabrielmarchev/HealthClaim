@@ -8,7 +8,7 @@ import preprocessor as p
 import json
 import jsonify
 from string import punctuation
-#from textblob import TextBlob
+from textblob import TextBlob
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -20,16 +20,16 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.conf import settings
-#from keras.models import load_model
-#from keras.preprocessing.sequence import pad_sequences
-#from keras.preprocessing.text import Tokenizer
-#import tensorflow as tf
+from keras.models import load_model
+from keras.preprocessing.sequence import pad_sequences
+from keras.preprocessing.text import Tokenizer
+import tensorflow as tf
 import pickle
 
 #keras
 #global graph
 #graph = tf.compat.v1.get_default_graph()
-#model = load_model('claimsmanager/Sentiment_LSTM_model.h5')
+model = load_model("/home/gabriel/HealthClaim/Sentiment.h5")
 MAX_SEQ_LEN = 300
 
 #Twitter credentials for the app
@@ -41,10 +41,10 @@ access_secret = '9FK0UIqZZ3u3iiYNsNlNJj7J8jR7su9euaytSUeFqBV2k'
 #pass twitter credentials to tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_key, access_secret)
-api = tweepy.API(auth,wait_on_rate_limit=True)
+api = tweepy.API(auth, wait_on_rate_limit=True)
 
 #load tokenizer
-#with open('claimsmanage/tokenizer.pickle', 'rb') as handle:
+#with open('claimsmanager/tokenizer.pickle', 'rb') as handle:
 #    tokenizer = pickle.load(handle)
 
 #searchTerm = input("enter keyword:")
@@ -130,7 +130,6 @@ def moreProcess(corpus):
     count_all.update(terms_only)
 """
 
-
 def clean_tweets(tweet):
     stop_words = set(stopwords.words('english'))
     word_tokens = word_tokenize(tweet)
@@ -164,22 +163,20 @@ def cleanTweet(text):
     filtered_text = clean_tweets(clean_text)
     return filtered_text
 
-
 """
 def predict(text, include_neutral=True):
     # Tokenize text
     x_test = pad_sequences(tokenizer.texts_to_sequences([text]), maxlen=MAX_SEQ_LEN)
     # Predict
     score = model.predict([x_test])[0]
-    if(score >=0.4 and score<=0.6):
+    if (score >= 0.4 and score <= 0.6):
         label = "Neutral"
-    if(score <=0.4):
+    if (score <= 0.4):
         label = "Negative"
-    if(score >=0.6):
+    if (score >= 0.6):
         label = "Positive"
 
-    return {"label" : label,
-        "score": float(score)} 
+    return {"label": label, "score": float(score)} 
 """
 
 # TWEEPY SEARCH FUNCTION
@@ -236,6 +233,16 @@ def twitter_search(request):
 
 """
 @api_view(["GET"])
+def getsentiment(request):
+    data = {"success": False}
+    # if params are found, echo msg param
+    if (request.data != None):
+        with graph.as_default():
+            data["predictions"] = predict(request.GET.get("text"))
+        data["success"] = True
+    return JsonResponse(data)
+
+@api_view(["GET"])
 def analysehashtag(request):
     positive = 0
     neutral = 0
@@ -255,8 +262,23 @@ def analysehashtag(request):
             neutral += 1
         if(prediction["label"] == "Negative"):
             negative += 1
-    return JsonResponse({"positive": positive, "neutral": neutral, "negative": negative});
+    return JsonResponse({"positive": positive, "neutral": neutral, "negative": negative})
 """
+
+@api_view(["GET"])
+def gettweets(request):
+    tweets = []
+    query = "#" + request.GET.get("text") + "-filter:retweets"
+    for tweet in tweepy.Cursor(api.search,q=query,rpp=5,lang="en", tweet_mode='extended').items(10):
+        temp = {}
+        temp["text"] = tweet.full_text
+        temp["username"] = tweet.user.screen_name
+        #with graph.as_default():
+        #    prediction = predict(tweet.full_text)
+        #temp["label"] = prediction["label"]
+        #temp["score"] = prediction["score"]
+        tweets.append(temp)
+    return JsonResponse({"results": tweets})
 
 """
 def buildVocabulary(preprocessedTrainingData):

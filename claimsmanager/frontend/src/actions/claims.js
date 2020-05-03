@@ -53,13 +53,10 @@ export const addClaim = (claim) => dispatch => {
 // GET_TWEETS - get list of tweets from hashtag search 
 export const getTweets = (hashtag) => dispatch => {
   axios
-    .get('http://localhost:8000/twitter_search', {
+    .get('http://localhost:8000/gettweets', {
       params: {text: hashtag}
     })
     .then(res => {
-      //response = res.toObject();
-      console.log(res.data.results); //check if python method returns corpus of tweets
-      //const results = Array.from(res.data.results);
       dispatch({
         type: GET_TWEET,
         payload: res.data.results
