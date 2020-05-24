@@ -20,7 +20,18 @@ export class Register extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    console.log('submit')
+    const { username, email, password, password2 } = this.state;
+    if (password !== password2) {
+      this.props.createMessage({ passwordNoMatch: 'Password does not match' });
+    }
+    else {
+      const newUser = {
+        username,
+        password,
+        email
+      }
+      this.props.register(newUser);
+    }
   }
 
   onChange = e => this.setState({
@@ -28,6 +39,9 @@ export class Register extends Component {
   });
 
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to="/" />;
+    }
     const { username, email, password, password2 } = this.state;
     return (
       <div className="col-md-6 m-auto">
@@ -93,5 +107,5 @@ const mapStateToProps = state => ({
   isAuthenticated: state.AuthReducer.isAuthenticated
 });
 
-export default connect(mapStateToProps, { register })(Register);
+export default connect(mapStateToProps, { register, createMessage })(Register);
 

@@ -1,16 +1,27 @@
-import { GET_TWEET } from '../actions/types';
+import { GET_TWEETS, SEARCH_LOADING } from '../actions/types';
 
-const initialState = {
-  tweets: []
+const initialState= {
+  isSearched: false,
+  isLoading: false,
+  results: {},
+  tweets: {}
 }
 
 export default function(state = initialState, action) {
   switch(action.type) {
-    case GET_TWEET:
+    case SEARCH_LOADING:
       return {
         ...state,
-        tweets: action.payload
-      }
+        isLoading: true
+      };
+    case GET_TWEETS:
+      return {
+        ...state,
+        isSearched: true,
+        isLoading: false,
+        results: action.payload.results,
+        tweets: action.payload.sampleTweets
+      };
     default:
       return state;
   }

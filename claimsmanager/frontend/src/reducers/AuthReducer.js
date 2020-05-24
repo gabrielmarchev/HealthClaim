@@ -22,7 +22,7 @@ export default function(state = initialState, action) {
       return {
         ...state,
         isLoading: true
-      }
+      };
     case USER_LOADED:
       return {
         ...state,
@@ -50,7 +50,7 @@ export default function(state = initialState, action) {
         user: null,
         isAuthenticated: false,
         isLoading: false
-      }
+      };
 		default:
 			return state;
 	}

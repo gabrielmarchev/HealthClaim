@@ -24,3 +24,4 @@ class ClaimViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer): #save claim owner when claim created
         serializer.save(user=self.request.user)
+        

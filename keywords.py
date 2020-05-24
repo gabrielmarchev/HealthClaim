@@ -4,30 +4,14 @@ import pandas as pd
 import tweepy
 import re
 import string
-import preprocessor as p
-import json
-import jsonify
 from string import punctuation
 from textblob import TextBlob
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 #from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from django.shortcuts import render
-from django.http import HttpResponse, Http404, JsonResponse
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.core import serializers
-from django.conf import settings
-#from keras.models import load_model
-#from keras.preprocessing.sequence import pad_sequences
-#from keras.preprocessing.text import Tokenizer
-#import tensorflow as tf
-#from tensorflow.python.keras.backend import set_session
+
 import pickle
-import pandas as pd
 import nltk
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -61,10 +45,10 @@ def process_words(text):
     tokens = nltk.word_tokenize(text)
     tags = nltk.pos_tag(tokens)
     #print(tags)
-    #verbs = [word for word, pos in tags if (pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN' or pos == 'VBP' or pos == 'VBZ')]
+    verbs = [word for word, pos in tags if (pos == 'VB' or pos == 'VBD' or pos == 'VBG' or pos == 'VBN' or pos == 'VBP' or pos == 'VBZ')]
     #print("verbs")
     #print(verbs)
-    #adjectives = [word for word, pos in tags if (pos == 'JJ' or pos == 'JJR' or pos == 'JJS')]
+    adjectives = [word for word, pos in tags if (pos == 'JJ' or pos == 'JJR' or pos == 'JJS')]
     #print("adjectives")
     #print(adjectives)
     pos_tags = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ', 'JJ', 'JJR', 'JJS']
@@ -102,47 +86,12 @@ cv = CountVectorizer(max_df=0.85, stop_words='english')
 word_count_vector = cv.fit_transform(docs)
 tfidf_transformer = TfidfTransformer(smooth_idf=True,use_idf=True)
 tfidf_transformer.fit(word_count_vector)
-feature_names = cv.get_feature_names()
-
-#load tokeniser
-with open('/home/gabriel/HealthClaim/claimsmanager/tokenizer.pickle', 'rb') as handle:
-    tokeniser = pickle.load(handle)
-
-def predict(text, include_neutral=True):
-    # Tokenize text
-    #tokenized_text = pad_sequences(tokeniser.texts_to_sequences([text]), maxlen=MAX_SEQ_LEN)
-    # Predict
-    #score = model.predict([x_test])[0]
-    analyser = SentimentIntensityAnalyzer()
-    score = analyser.polarity_scores(text)
-    #print(text)
-    #print(tokenized_text)
-    #print(score)
-    """
-    if (score.pos > score.neg and score.pos > score.neu):
-        label = "Positive"
-    elif (score.neg > score.neu):
-        label = "Negative"
-    else:
-        label = "Neutral"
-    """
-    compound = score['compound']
-    if (compound > -0.1 and compound < 0.1):
-        label = "Neutral"
-    if (compound <= -0.1):
-        label = "Negative"
-    if (compound >= 0.1):
-        label = "Positive"
-
-    #return {"label": label, "score": float(score)}
-    
-    return label
 
 def sort_coo(coo_matrix):
     tuples = zip(coo_matrix.col, coo_matrix.data)
     return sorted(tuples, key=lambda x: (x[1], x[0]), reverse=True)
 
-def extract_topn_from_vector(feature_names, sorted_items, topn=10):
+def extract_topn_from_vector(feature_names, sorted_items, topn=2):
     #get the feature names and tf-idf score of top n items
     
     #use only topn items from vector
@@ -181,8 +130,11 @@ def reserved_term_weights (tfidf, countVec):
     return tfidf
 
 def extract_keywords(text):
+    # you only needs to do this once
+    feature_names = cv.get_feature_names()
+
     # get the document that we want to extract keywords from
-    doc = pre_process(text)
+    doc = text
 
     #generate tf-idf for the given document
     tf_idf_vector = tfidf_transformer.transform(cv.transform([doc]))
@@ -195,33 +147,37 @@ def extract_keywords(text):
 
     #extract only the top n; n here is 10
     keywords = extract_topn_from_vector(feature_names,sorted_items,3)
+    print("extract")
     print(keywords)
 
     return keywords
 
 # TWEEPY SEARCH FUNCTION
-@api_view(["GET"])
-def analyse(request):
+#@api_view(["GET"])
+def analyse(text):
     positive = 0
     neutral = 0
     negative = 0
     tweets1 = []
     tweets2 = []
-    text = request.GET.get("text")
-    keywords = extract_keywords(text)
+    #text = request.GET.get("text")
+    keywords = extract_keywords(str(text))
+    print("keywords")
     print(keywords)
 
     #first keyword
     
     query1 = "#" + str(keywords[0]) + "-filter:retweets"
-
+    print("query1")
+    print(query1)
+"""
     for tweet in tweepy.Cursor(api.search,
                                 q=query1,
                                 count=100,
                                 lang="en",
                                 tweet_mode="extended"
-                                ).items(100):
-        """
+                                ).items():
+        
         with graph.as_default():
             set_session(sess)
             prediction = predict(tweet.full_text)
@@ -231,7 +187,7 @@ def analyse(request):
             neutral += 1
         if(prediction["label"] == "Negative"):
             negative += 1
-        """
+        
         label = predict(tweet.full_text)
         if(label == "Positive"):
             positive += 1
@@ -257,8 +213,8 @@ def analyse(request):
                                 count=100,
                                 lang="en",
                                 tweet_mode="extended"
-                                ).items(100):
-        """
+                                ).items():
+        
         with graph.as_default():
             set_session(sess)
             prediction = predict(tweet.full_text)
@@ -268,7 +224,7 @@ def analyse(request):
             neutral += 1
         if(prediction["label"] == "Negative"):
             negative += 1
-        """
+        
         label = predict(tweet.full_text)
         if(label == "Positive"):
             positive += 1
@@ -285,18 +241,15 @@ def analyse(request):
         temp["label"] = label
         tweets2.append(temp)
     
-    keyword_one = "#" + str(keywords[0])
-    keyword_two = "#" + str(keywords[1])
-
-    first_set = {"keyword": keyword_one, "tweets": tweets1}
-    second_set = {"keyword": keyword_two, "tweets": tweets2}
+    first_set = {"keyword": query1, "tweets": tweets1}
+    second_set = {"keyword": query2, "tweets": tweets2}
 
     tweets = {"first": first_set, "second": second_set}
 
     results = {"positive": positive, "neutral": neutral, "negative": negative}
 
     return JsonResponse({"results": results, "sampleTweets": tweets})
-
+"""
 """
 @api_view(["GET"])
 def gettweets(request):
@@ -357,3 +310,7 @@ def main():
         print("Overall Negative Sentiment")
         print("Negative Sentiment Percentage = " + str(100*NBResultLabels.count('negative')/len(NBResultLabels)) + "%")
     """
+
+analyse("Protein helps your muscles grow")
+
+

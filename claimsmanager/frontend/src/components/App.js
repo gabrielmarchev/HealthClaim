@@ -1,13 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch, Redirect } from "react-router-dom";
+import "bootswatch/dist/minty/bootstrap.min.css"; 
 
 import { Provider as AlertProvider} from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 
 import Header from './layout/Header';
-import SearchBar from './claims/SearchBar'
 import Alert from './layout/Alert';
+import Claims from './claims/Claims';
 import Dashboard from './claims/Dashboard';
 import Login from './accounts/Login';
 import Register from './accounts/Register';
@@ -24,22 +25,11 @@ const alertOption = {
 }
 
 class App extends Component {
+
   componentDidMount() {
     store.dispatch(loadUser());
   }
-
-  constructor(props) {
-    super(props);
- 
-    this.state = {
-      searchResults: []
-    }
-
-    this.search = this.search.bind(this);
-  }
-
-  search(term) {}
-
+  
   render() {
     return (
       <Provider store={store}>
@@ -48,9 +38,10 @@ class App extends Component {
             <Fragment>
               <Header />
               <Alert />
-              <div className="App">
+              <div className="container">
                 <Switch>
                   <PrivateRoute exact path="/" component={Dashboard} />
+                  <PrivateRoute exact path="/claims" component={Claims} />
                   <Route exact path="/register" component={Register} />
                   <Route exact path="/login" component={Login} />
                 </Switch>

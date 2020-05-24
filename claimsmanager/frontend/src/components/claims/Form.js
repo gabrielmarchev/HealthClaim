@@ -13,7 +13,7 @@ export class Form extends Component {
   static propTypes = {
     addClaim: PropTypes.func.isRequired,
     getTweets: PropTypes.func.isRequired
-  } 
+  }
 
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -22,22 +22,21 @@ export class Form extends Component {
     const { owner, message } = this.state;
     const claim = { owner, message };
     this.props.addClaim(claim);
-    //TEMPORARY SEARCH BY OWNER - CHANGE THIS TO FULL CLAIM LATER
-    this.props.getTweets(owner); //hashtag search by owner (brand) name
+    this.props.getTweets(claim); //hashtag search by claim
     this.setState({
       owner: '',
       message: '',
     });
   };
-
+  
   render() {
     const { owner, message } = this.state;
     return (
       <div className="card card-body mt-4 mb-4">
-        <h2>Add Claim</h2>
+        <h2>Search Health Claim</h2>
         <form onSubmit={this.onSubmit}>
           <div className="form-group">
-            <label>Owner</label>
+            <label>Brand/Owner</label>
             <input
               className="form-control"
               type="text"
@@ -57,8 +56,8 @@ export class Form extends Component {
             />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-primary">
-              Submit
+            <button type="submit" className="btn btn-info">
+              Analyse
             </button>
           </div>
         </form>

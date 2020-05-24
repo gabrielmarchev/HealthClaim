@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 
 export class Header extends Component {
-
+  
   static propTypes = {
     auth: PropTypes.object.isRequired,
     logout: PropTypes.func.isRequired
@@ -21,7 +21,21 @@ export class Header extends Component {
           </strong>
         </span>
         <li className="nav-item">
-          <button onClick={this.props.logout} className="nav-link btn btn-info btn-sm text-light">Logout</button>
+          <button onClick={this.props.logout} className="nav-link btn btn-secondary btn-sm text-light">Logout</button>
+        </li>
+      </ul>
+    );
+
+    const pageLinks = (
+      <ul className="navbar-nav">
+        <li className="nav-item">
+          <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
+        </li>
+        <li className="nav-item">
+          <Link to="/claims" className="nav-link">History</Link>
+        </li>
+        <li className="nav-item">
+          <a className="nav-link" href="#">About</a>
         </li>
       </ul>
     );
@@ -39,25 +53,19 @@ export class Header extends Component {
 
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <a className="navbar-brand" href="#">Claims Manager</a>
+        <a className="navbar-brand" href="#">Health Claims Manager</a>
         <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav">
-            <li className="nav-item active">
-              <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">About</a>
-            </li>
-          </ul>
+          { isAuthenticated ? pageLinks: null}
           { isAuthenticated ? authLinks : guestLinks}
         </div>
       </nav>
     )
   }
 }
+
 
 const mapsStateToProps = state => ({
   auth: state.AuthReducer

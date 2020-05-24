@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { returnErrors } from './messages';
 
 import {
   USER_LOADED,
@@ -24,6 +25,7 @@ export const loadUser = () => (dispatch, getState) => { //getState used to get a
         payload: res.data
       });
     }).catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({
         type: AUTH_ERROR
       });
@@ -51,6 +53,7 @@ export const login = (username, password) => dispatch => { //getState used to ge
         payload: res.data
       });
     }).catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({
         type: LOGIN_FAIL
       });
@@ -78,6 +81,7 @@ export const register = ({ username, password, email }) => dispatch => { //getSt
         payload: res.data
       });
     }).catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
       dispatch({
         type: REGISTER_FAIL
       });
@@ -93,11 +97,11 @@ export const logout = () => (dispatch, getState) => { //getState used to get any
         type: LOGOUT_SUCCESS,
       });
     }).catch(err => {
-      console.log(err);
+      dispatch(returnErrors(err.response.data, err.response.status));
     });
 }
 
-// Setup config with token - helper function
+// Setup config with token
 export const tokenConfig = getState => {
   // Get token from state
   const token = getState().AuthReducer.token;

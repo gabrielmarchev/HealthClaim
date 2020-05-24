@@ -13,13 +13,12 @@ export class Claims extends Component {
   componentDidMount() {
     this.props.getClaims();
   }
-  
-  //<SearchBar onSearch={this.search} />
 
   render() {
     return (
       <Fragment>
-        <h1>Claims List</h1>
+        <h2>Your Claims List</h2>
+        <br />
         <table className="table table-striped">
           <thead>
             <tr>
@@ -45,6 +44,7 @@ export class Claims extends Component {
       </Fragment>
     );
   }
+
 }
 
 const mapStateToProps = state => ({
