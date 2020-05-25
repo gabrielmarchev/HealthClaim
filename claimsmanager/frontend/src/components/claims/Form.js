@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { addClaim, getTweets } from '../../actions/claims'
 
-
 export class Form extends Component {
   state = {
     owner: '',
@@ -11,7 +10,7 @@ export class Form extends Component {
   };
 
   static propTypes = {
-    addClaim: PropTypes.func.isRequired,
+    //addClaim: PropTypes.func.isRequired,
     getTweets: PropTypes.func.isRequired
   }
 
@@ -21,7 +20,7 @@ export class Form extends Component {
     e.preventDefault();
     const { owner, message } = this.state;
     const claim = { owner, message };
-    this.props.addClaim(claim);
+    //this.props.addClaim(claim);
     this.props.getTweets(claim); //hashtag search by claim
     this.setState({
       owner: '',
@@ -66,4 +65,4 @@ export class Form extends Component {
   }
 }
 
-export default connect(null, { addClaim, getTweets })(Form);
+export default connect(null, { getTweets })(Form);
