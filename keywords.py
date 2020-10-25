@@ -27,10 +27,10 @@ from sklearn.feature_extraction.text import TfidfTransformer
 MAX_SEQ_LEN = 300
 
 #Twitter credentials for the app
-consumer_key = 'fHLwM1mnVIoOZOwkbjLelDF7Z'
-consumer_secret = '60oaale7a45EZOmrf0Laa5NMUwagprmDeGOS9wSUDWm52d8TAh'
-access_key = '1527972876-Avyofj6USBAKKGpKwo7xqHlnihiCEJn19iKc8U7'
-access_secret = '9FK0UIqZZ3u3iiYNsNlNJj7J8jR7su9euaytSUeFqBV2k'
+consumer_key = ''
+consumer_secret = ''
+access_key = ''
+access_secret = ''
 
 #pass twitter credentials to tweepy
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
