@@ -1,2 +1,2 @@
-# Final Year Project
-Analysis of health claim benefits on food packaging
+# Health Claims App
+Web App for Natural Language Processing of Food Packaging Labels
